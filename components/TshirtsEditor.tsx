@@ -43,13 +43,20 @@ export default function TshirtsEditor() {
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       if (resizingId !== null && initialResizeRef.current) {
+        const found = context?.find(resizingId)[0]
         const { startX, startY, width, height } = initialResizeRef.current;
-        const deltaX = e.clientX - startX;
+        const deltaX = e.clientX - startX
         const deltaY = e.clientY - startY;
-        const newWidth = Math.max(width + deltaX, 50);
-        const newHeight = Math.max(height + deltaY, 50);
-
-        context?.update(resizingId, { size: { width: newWidth, height: newHeight } });
+        const newWidth = Math.max(width + deltaX, 30);
+        const newHeight = Math.max(height + deltaY, 30);
+        const dx = (newWidth - width) / 2;
+        const dy = (newHeight - height) / 2;
+        context?.update(resizingId, {  
+          position: {
+            x: (found?found.position.x:0) + dx, // 旧中心位置 + 差分
+            y: (found?found.position.y:0) + dy
+          },
+          size: { width: newWidth, height: newHeight } });
       }
     };
 
@@ -65,31 +72,7 @@ export default function TshirtsEditor() {
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [resizingId, context]);
-
-
-  const handleDragStart = (e: React.MouseEvent, id: number) => {
-    if (resizingId !== null) return;
-    console.log("id"+id);
-    const startX = e.clientX;
-    const startY = e.clientY;
-    const startDecal = context?.find(id)[0];
-    if (!startDecal) return;
-
-    const handleMouseMove = (ev: MouseEvent) => {
-      const dx = ev.clientX - startX;
-      const dy = ev.clientY - startY;
-      context?.update(id,{position:{x:startDecal.position.x + dx, y:startDecal.position.y + dy}});                     
-    };
-
-    const handleMouseUp = () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseup', handleMouseUp);
-    };
-
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mouseup', handleMouseUp);
-  };
+  }, [resizingId]);
 
   const handleResizeStart = (e: React.MouseEvent, id: number) => {
     e.stopPropagation();
@@ -106,6 +89,32 @@ export default function TshirtsEditor() {
     };
   };
 
+  const handleDragStart = (e: React.MouseEvent, id: number) => {
+    if (resizingId !== null) return;
+    console.log("id"+id);
+    const startX = e.clientX;
+    const startY = e.clientY;
+    const startDecal = context?.find(id)[0];
+    if (!startDecal) return;
+
+    const handleMouseMove = (ev: MouseEvent) => {
+      const dx = ev.clientX - startX;
+      const dy = ev.clientY - startY;
+      context?.update(id,{position:{
+        x: startDecal.position.x + dx,
+        y: startDecal.position.y + dy}});                     
+    };
+
+    const handleMouseUp = () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
+  };
+
+
   const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     const file = event.dataTransfer.files[0];
@@ -118,7 +127,9 @@ export default function TshirtsEditor() {
         {
           id: context?.images.reduce((max,i)=>Math.max(max,i.id)+1,0),
           image: url,
-          position: {x:dropX,y:dropY},
+          position: {  
+              x: dropX - posCenter.x,
+              y: dropY - posCenter.y},
           rotate: 0,
           size:{width: 128, height: 128}
         }
@@ -148,8 +159,8 @@ export default function TshirtsEditor() {
           onClick={() => setSelectedId(image.id)}
           className="absolute select-none border border-gray-400 z-50"
           style={{
-            left: image.position.x,
-            top: image.position.y,
+            left: posCenter.x + image.position.x - image.size.width / 2,
+            top: posCenter.y + image.position.y - image.size.height / 2,
             width: image.size.width,
             height: image.size.height,
             transform: `rotate(${image.rotate ?? 0}deg)`

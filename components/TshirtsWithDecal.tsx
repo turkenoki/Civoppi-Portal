@@ -73,7 +73,7 @@ function Scene() {
               <Decal
                 key={img.id}
                 mesh={meshRef}
-                position={[-0.057+0.00089999*(img.position.x + img.size.width / 2 - 474), 0, -0.716+0.00135*(img.position.y + img.size.height- 149)]}
+                position={[0.00089999*(img.position.x), 0, -0.52 + 0.000905*(img.position.y)]}
                 rotation={[Math.PI / 2, 0, 0]}
                 scale={[0.115 * img.size.width / 128, 0.115 * img.size.height / 128 , 0.3]}
                 // position={[-0.03+0.000911*(img.position.x - 474), 0, -0.566+0.000905*(img.position.y - 149)]}
