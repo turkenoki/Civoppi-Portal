@@ -62,7 +62,7 @@ function Scene() {
     <group scale={2.1}>
       <OrbitControls />
       <primitive object={scene} />
-      <group position={[0.0005,-0.55,0.05553]} rotation={[Math.PI/2,0,0]} scale={1.05}>
+      <group position={[0.0005,-0.56,0.05553]} rotation={[Math.PI/2,0,0]} scale={1.05}>
 
         {context?.images.map((img, index) => {
             const tex = textureMap[index];
@@ -73,7 +73,7 @@ function Scene() {
               <Decal
                 key={img.id}
                 mesh={meshRef}
-                position={[0.00089999*(img.position.x), 0, -0.52 + 0.000905*(img.position.y)]}
+                position={[0.00089999*(img.position.x), 0, -0.53 + 0.000905*(img.position.y)]}
                 rotation={[Math.PI / 2, 0, 0]}
                 scale={[0.115 * img.size.width / 128, 0.115 * img.size.height / 128 , 0.3]}
                 // position={[-0.03+0.000911*(img.position.x - 474), 0, -0.566+0.000905*(img.position.y - 149)]}
