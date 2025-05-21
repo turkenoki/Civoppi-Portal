@@ -28,7 +28,7 @@ export default function TshirtsEditor() {
 
   useEffect(() => {
     if (modelRef.current) {
-      const rect = modelRef.current.getBoundingClientRect();
+      // const rect = modelRef.current.getBoundingClientRect();
       setSizeModel({ width: 320, height: 320 });
     }
   }, [currentSide]);
@@ -204,12 +204,14 @@ export default function TshirtsEditor() {
             max={180}
             step={1}
             value={selectedId?elementsContext?.find(selectedId)?.rotate:0}
-            onChange={(e) =>
-              selectedId && elementsContext?.find(selectedId) &&
-              elementsContext?.update(elementsContext?.find(selectedId)?.id!, {
-                rotate: parseInt(e.target.value),
-              })
-            }
+            onChange={(e) =>{
+              const found =  selectedId?elementsContext?.find(selectedId):null;
+              if(found) {
+                elementsContext?.update(found.id, {
+                  rotate: parseInt(e.target.value),
+                });
+              }
+            }}
             className="mb-2"
           />
         </div>

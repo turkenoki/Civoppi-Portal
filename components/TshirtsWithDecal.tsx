@@ -83,7 +83,9 @@ function Scene() {
     scene.traverse((child) => {
       if((child as THREE.Mesh).isMesh){
         const mat = (child as THREE.Mesh).material as THREE.MeshStandardMaterial;
-        mat.color.set(colorMap[colorContext?.color!].color); // ← 赤に変更
+        const c = colorContext?.color;
+        if(c)
+          mat.color.set(colorMap[c]?.color);
 
       }
       if ((child as THREE.Mesh).isMesh && child.name === 'front') {
