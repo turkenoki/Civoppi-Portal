@@ -288,8 +288,8 @@ export default function TshirtsEditor() {
       <img
         src={`/models/tshirts_${currentSide}_${colorContext?.color}.png`}
         ref={modelRef}
-        width={320}
-        height={320}
+        width='320px'
+        height='320px'
         className="absolute select-none z-0 left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2"
         alt="tshirt"
         draggable={false}
