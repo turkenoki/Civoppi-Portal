@@ -288,9 +288,9 @@ export default function TshirtsEditor() {
       <img
         src={`/models/tshirts_${currentSide}_${colorContext?.color}.png`}
         ref={modelRef}
-        width='320px'
-        height='320px'
-        className="absolute select-none z-0 left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2"
+        // width='320px'
+        // height='320px'
+        className="absolute select-none z-0 w-80 h-80 left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2"
         alt="tshirt"
         draggable={false}
       />
@@ -312,7 +312,7 @@ export default function TshirtsEditor() {
             key={element.id}
             onMouseDown={(e) => handleDragStart(e, element.id)}
             onClick={() => setSelectedId(element.id)}
-            className="absolute select-none border border-gray-400 z-10"
+            className="absolute select-none border border-gray-400 z-10  cursor-move"
             style={{
               left: posCenter.x + element.position.x - element.size.width / 2,
               top: posCenter.y + element.position.y - element.size.height / 2,
