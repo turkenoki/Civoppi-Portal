@@ -27,6 +27,9 @@ export default function TshirtsEditor() {
   }, []);
 
   useEffect(() => {
+    const spacingPx = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--spacing'));
+    console.log("spacingPx:"+spacingPx);
+  
     const handleImageLoad = () => {
       if (modelRef.current) {
         const rect = modelRef.current.getBoundingClientRect();
@@ -166,10 +169,9 @@ export default function TshirtsEditor() {
     event.preventDefault();
   };
 
-  const spacingPx = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--spacing'));
-  console.log("spacingPx:"+spacingPx);
 
-  
+
+
   return (
     <div onDrop={handleDrop} onDragOver={handleDragOver} className="w-screen h-screen bg-white relative">
       <div className="fixed rounded border-1 p-2 top-13 left-3 z-50 flex flex-col w-20 text-[8px]">
