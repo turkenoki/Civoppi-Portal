@@ -291,17 +291,15 @@ export default function TshirtsEditor() {
           />
         </div>
       )}
-
+      
       <img
-        ref={modelRef}
         src={`/models/tshirts_${currentSide}_${colorContext?.color}.png`}
-        style={{
-          width: sideProps[currentSide].size,
-          height: sideProps[currentSide].size,
-        }}
+        ref={modelRef}
+        width={320}
+        height={320}
+        className="absolute select-none z-0 left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2"
         alt="tshirt"
         draggable={false}
-        className="absolute select-none z-0 left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2"
       />
 
 
