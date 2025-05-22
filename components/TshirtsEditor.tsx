@@ -29,8 +29,8 @@ export default function TshirtsEditor() {
   useEffect(() => {
     const spacingPx = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--spacing'));
     console.log("spacingPx:"+spacingPx);
-    const w = document.body.getBoundingClientRect().width;
-    console.log('body width =', w);
+    const r = document.body.getBoundingClientRect();
+    console.log('body width =', r.width ,"height",r.height);
 
     const handleImageLoad = () => {
       if (modelRef.current) {
@@ -176,7 +176,7 @@ export default function TshirtsEditor() {
 
   return (
     <div onDrop={handleDrop} onDragOver={handleDragOver} className="w-screen h-screen bg-white relative">
-      <div className="fixed rounded border-1 p-2 top-13 left-3 z-50 flex flex-col w-20 text-[8px]">
+      <div className="fixed rounded border-1 p-2 top-13 left-3 z-50 flex flex-col w-[20%] text-[8px]">
         <div className="mt-2 flex flex-col">
           <select
             value={currentSide}
@@ -231,7 +231,7 @@ export default function TshirtsEditor() {
 
 
       {selectedId && elementsContext?.find(selectedId)?.type === "text" && (
-        <div className="fixed top-13 right-4 bg-white border shadow-md p-4 z-50 rounded w-40">
+        <div className="fixed top-13 right-4 bg-white border shadow-md p-4 z-50 rounded w-[20%]">
           <h2 className="text-sm font-bold mb-2">文字編集</h2>
 
           {/* テキスト入力 */}
@@ -298,7 +298,7 @@ export default function TshirtsEditor() {
         ref={modelRef}
         // width='320px'
         // height='320px'
-        className="absolute select-none z-0 w-80 h-80 left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2"
+        className="absolute select-none z-0 w-[37%] h-[68%] left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2"
         alt="tshirt"
         draggable={false}
       />
