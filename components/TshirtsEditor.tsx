@@ -166,14 +166,6 @@ export default function TshirtsEditor() {
     event.preventDefault();
   };
 
-  const sideProps: { [key: string]: { name: string; size: number } } = {
-    front: { name: '前面', size: 320 },
-    back: { name: '背面', size: 320 },
-    left: { name: '左袖', size: 320 },
-    right: { name: '右袖', size: 320 },
-  };
-  
-
   return (
     <div onDrop={handleDrop} onDragOver={handleDragOver} className="w-screen h-screen bg-white relative">
       <div className="fixed rounded border-1 p-2 top-13 left-3 z-50 flex flex-col w-20 text-[8px]">
@@ -292,6 +284,7 @@ export default function TshirtsEditor() {
         </div>
       )}
       
+      {/*  Tシャツモデル */}
       <img
         src={`/models/tshirts_${currentSide}_${colorContext?.color}.png`}
         ref={modelRef}
