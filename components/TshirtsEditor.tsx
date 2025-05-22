@@ -146,7 +146,7 @@ export default function TshirtsEditor() {
         image: url,
         position: { x: dropX - posCenter.x, y: dropY - posCenter.y },
         rotate: 0,
-        size: { width: sizeModel.width / 320 * 128   , height: sizeModel.height / 320 * 128 },
+        size: { width: 128   , height: 128 },
         side: currentSide,
       } as ImageBean);
     }
@@ -162,7 +162,7 @@ export default function TshirtsEditor() {
       color: '#000000',
       position: { x: 0, y: 0 },
       rotate: 0,
-      size: { width: sizeModel.width / 320 * 100 , height: sizeModel.width / 320 * 40 },
+      size: { width: 100 , height:  40 },
       side: currentSide,
     } as TextBean);
   };
