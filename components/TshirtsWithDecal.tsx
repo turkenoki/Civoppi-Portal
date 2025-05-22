@@ -7,6 +7,7 @@ import { useMemo, useRef,useContext } from 'react';
 import { DesignElementContext } from '@/components/DesignElementContext';
 import { ColorContext} from '@/components/ColorContext';
 import { colorMap } from '@/components/Colors'
+import CameraLight from '@/components/CameraLight'
 
 function DebugOverlay() {
   const context = useContext(DesignElementContext);
@@ -102,6 +103,7 @@ function Scene() {
   Object.values(textureMap).forEach(tex => tex && (tex.flipY = false));
   return (
     <group scale={2.1}>
+      <CameraLight/>
       <OrbitControls />
       <primitive object={scene} />
       <group position={[0.0005,-0.56,0.05553]} rotation={[Math.PI/2,0,0]} scale={1.05}>
