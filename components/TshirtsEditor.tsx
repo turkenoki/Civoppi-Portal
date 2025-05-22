@@ -162,7 +162,7 @@ export default function TshirtsEditor() {
       color: '#000000',
       position: { x: 0, y: 0 },
       rotate: 0,
-      size: { width: 100 , height:  40 },
+      size: { width: 175 , height:  70 },
       side: currentSide,
     } as TextBean);
   };
@@ -176,7 +176,7 @@ export default function TshirtsEditor() {
 
   return (
     <div onDrop={handleDrop} onDragOver={handleDragOver} className="w-screen h-screen bg-white relative">
-      <div className="fixed rounded border-1 p-2 top-13 left-3 z-50 flex flex-col w-[20%] text-[8px]">
+      <div className="fixed rounded border-1 p-2 top-13 left-3 z-50 flex flex-col w-30 text-sm">
         <div className="mt-2 flex flex-col">
           <select
             value={currentSide}
@@ -231,7 +231,7 @@ export default function TshirtsEditor() {
 
 
       {selectedId && elementsContext?.find(selectedId)?.type === "text" && (
-        <div className="fixed top-13 right-4 bg-white border shadow-md p-4 z-50 rounded w-[20%]">
+        <div className="fixed top-13 left-40 bg-white border shadow-md p-4 z-50 rounded w-30">
           <h2 className="text-sm font-bold mb-2">文字編集</h2>
 
           {/* テキスト入力 */}
@@ -298,7 +298,7 @@ export default function TshirtsEditor() {
         ref={modelRef}
         // width='320px'
         // height='320px'
-        className="absolute select-none z-0 w-[37%] h-[68%] left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2"
+        className="absolute select-none z-0 w-140 h-140 left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2"
         alt="tshirt"
         draggable={false}
       />
@@ -322,10 +322,10 @@ export default function TshirtsEditor() {
             onClick={() => setSelectedId(element.id)}
             className="absolute select-none border border-gray-400 z-10  cursor-move"
             style={{
-              left: posCenter.x + element.position.x - element.size.width / 2,
-              top: posCenter.y + element.position.y - element.size.height / 2,
-              width: element.size.width ,
-              height: element.size.height ,
+              left: posCenter.x + element.position.x * 1.75 - element.size.width * 1.75  / 2,
+              top: posCenter.y + element.position.y * 1.75 - element.size.height * 1.75 / 2,
+              width: element.size.width * 1.75 ,
+              height: element.size.height * 1.75,
               transform: `rotate(${element.rotate ?? 0}deg)`,
             }}
           >
@@ -343,7 +343,7 @@ export default function TshirtsEditor() {
                   suppressContentEditableWarning
                   className="w-full h-full text-center outline-none"
                   style={{
-                    fontSize: element.fontSize,
+                    fontSize: element.fontSize * 1.75,
                     fontFamily: element.fontFamily,
                     color: element.color,
                     display: 'flex',
@@ -361,7 +361,7 @@ export default function TshirtsEditor() {
                 <div
                   className="absolute text-center inset-0 w-full h-full z-0 flex items-center justify-center text-center pointer-events-none"
                   style={{
-                    fontSize: element.fontSize,
+                    fontSize: element.fontSize * 1.75,
                     fontFamily: element.fontFamily,
                     color: element.color,
                     whiteSpace: 'nowrap', // ← 追加
@@ -375,7 +375,7 @@ export default function TshirtsEditor() {
               )
             )}
             <div
-              className="absolute bottom-0 right-0 w-1 h-1 z-50 cursor-se-resize"
+              className="absolute bottom-0 right-0 w-2 h-2 z-50 cursor-se-resize"
               onMouseDown={(e) => handleResizeStart(e, element.id)}
             />
           </div>
