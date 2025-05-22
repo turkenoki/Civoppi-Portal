@@ -27,11 +27,23 @@ export default function TshirtsEditor() {
   }, []);
 
   useEffect(() => {
-    if (modelRef.current) {
-      // const rect = modelRef.current.getBoundingClientRect();
-      setSizeModel({ width: 320, height: 320 });
+    const handleImageLoad = () => {
+      if (modelRef.current) {
+        const rect = modelRef.current.getBoundingClientRect();
+        setSizeModel({ width: rect.width, height: rect.height });
+      }
+    };
+    const img = modelRef.current;
+    if (img?.complete) {
+      handleImageLoad(); // 画像がすでに読み込まれていたら即時取得
+    } else {
+      img?.addEventListener('load', handleImageLoad);
     }
-  }, [currentSide]);
+    return () => {
+      img?.removeEventListener('load', handleImageLoad);
+    };
+  }, [currentSide, colorContext?.color]);
+
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
