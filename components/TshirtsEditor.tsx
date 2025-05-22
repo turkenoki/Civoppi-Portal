@@ -29,7 +29,9 @@ export default function TshirtsEditor() {
   useEffect(() => {
     const spacingPx = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--spacing'));
     console.log("spacingPx:"+spacingPx);
-  
+    const w = document.body.getBoundingClientRect().width;
+    console.log('body width =', w);
+
     const handleImageLoad = () => {
       if (modelRef.current) {
         const rect = modelRef.current.getBoundingClientRect();
