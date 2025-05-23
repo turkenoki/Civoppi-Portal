@@ -2,19 +2,19 @@
 
 import { useState, useRef, useEffect, useContext } from 'react';
 import { DesignElementContext, ImageBean, TextBean } from '@/components/DesignElementContext';
-import { ColorContext } from '@/components/ColorContext';
+import { EditorContext } from '@/components/EditorContext';
 import { v4 as uuidv4 } from 'uuid';
 import { colorMap } from '@/components/Colors'
+import { sideMap } from '@/components/Sides'
 
 export default function TshirtsEditor() {
   const [resizingId, setResizingId] = useState<string | null>(null);
   const [sizeModel, setSizeModel] = useState({ width: 0, height: 0 });
   const [posCenter, setPosCenter] = useState({ x: 0, y: 0 });
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [currentSide, setCurrentSide] = useState<'front' | 'back' | 'left' | 'right'>('front');
   const modelRef = useRef<HTMLImageElement>(null);
   const elementsContext = useContext(DesignElementContext);
-  const colorContext = useContext(ColorContext);
+  const editorContext = useContext(EditorContext);
   
   const initialResizeRef = useRef<{ startX: number; startY: number; width: number; height: number } | null>(null);
 
@@ -47,7 +47,7 @@ export default function TshirtsEditor() {
     return () => {
       img?.removeEventListener('load', handleImageLoad);
     };
-  }, [currentSide, colorContext?.color]);
+  }, [editorContext]);
 
 
   useEffect(() => {
@@ -67,8 +67,8 @@ export default function TshirtsEditor() {
         const found = elementsContext?.find(resizingId);
         if (!found) return;
         const { startX, startY, width, height } = initialResizeRef.current;
-        const deltaX = e.clientX - startX;
-        const deltaY = e.clientY - startY;
+        const deltaX = (e.clientX - startX)/1.75;
+        const deltaY = (e.clientY - startY)/1.75;
         const newWidth = Math.max(width + deltaX, 30);
         const newHeight = Math.max(height + deltaY, 30);
         const dx = (newWidth - width) / 2;
@@ -78,7 +78,7 @@ export default function TshirtsEditor() {
             x: found.position.x + dx,
             y: found.position.y + dy,
           },
-          size: { width: newWidth, height: newHeight },
+          size: { width: newWidth , height: newHeight },
         });
       }
     };
@@ -147,7 +147,7 @@ export default function TshirtsEditor() {
         position: { x: dropX - posCenter.x, y: dropY - posCenter.y },
         rotate: 0,
         size: { width: 128   , height: 128 },
-        side: currentSide,
+        side: editorContext?.side,
       } as ImageBean);
     }
   };
@@ -162,8 +162,8 @@ export default function TshirtsEditor() {
       color: '#000000',
       position: { x: 0, y: 0 },
       rotate: 0,
-      size: { width: 175 , height:  70 },
-      side: currentSide,
+      size: { width: 100 , height:  40 },
+      side: editorContext?.side,
     } as TextBean);
   };
 
@@ -177,24 +177,26 @@ export default function TshirtsEditor() {
   return (
     <div onDrop={handleDrop} onDragOver={handleDragOver} className="w-screen h-screen bg-white relative">
       <div className="fixed rounded border-1 p-2 top-13 left-3 z-50 flex flex-col w-30 text-sm">
+        {/* 編集面 */}
         <div className="mt-2 flex flex-col">
           <select
-            value={currentSide}
-            onChange={(e) => setCurrentSide(e.target.value as 'front'|'back'|'left'|'right')}
+            value={editorContext?.side}
+            onChange={(e) => editorContext?.setCurrentSide(e.target.value as 'front'|'back'|'right'|'left')}
             className="border rounded px-2 py-1"
           >
-            <option value="front">前面</option>
-            <option value="back">背面</option>
-            <option value="left">左側</option>
-            <option value="right">右側</option>
+          {Object.entries(sideMap).map(([key, value]) => (
+            <option key={key} value={key} >
+              {value.name}
+            </option>
+          ))}
           </select>
         </div>
 
         {/* 色選択 */}
         <div className="mt-3 flex flex-col">
           <select
-            value={colorContext?.color}
-            onChange={(e) => colorContext?.setCurrentColor(e.target.value)}
+            value={editorContext?.color}
+            onChange={(e) => editorContext?.setCurrentColor(e.target.value)}
             className="border rounded px-2 py-1"
           >
           {Object.entries(colorMap).map(([key, value]) => (
@@ -293,16 +295,17 @@ export default function TshirtsEditor() {
       )}
       
       {/*  Tシャツモデル */}
-      <img
-        src={`/models/tshirts_${currentSide}_${colorContext?.color}.png`}
-        ref={modelRef}
-        // width='320px'
-        // height='320px'
-        className="absolute select-none z-0 w-140 h-140 left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2"
-        alt="tshirt"
-        draggable={false}
-      />
-
+      {editorContext && (
+        <img
+          src={`/models/tshirts_${editorContext?.side}_${editorContext?.color}.png`}
+          ref={modelRef}
+          width= {560*sideMap[editorContext.side].scale}
+          height={560*sideMap[editorContext.side].scale}
+          className="absolute select-none z-0 left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2"
+          alt="tshirt"
+          draggable={false}
+        />
+      )}
 
       <div
         // style={{
@@ -315,7 +318,7 @@ export default function TshirtsEditor() {
         //   zIndex: 10,
         // }}
       >
-        {elementsContext?.elements.filter((elt) => elt.side === currentSide).map((element) => (
+        {elementsContext?.elements.filter((elt) => elt.side === editorContext?.side).map((element) => (
           <div
             key={element.id}
             onMouseDown={(e) => handleDragStart(e, element.id)}
@@ -383,34 +386,34 @@ export default function TshirtsEditor() {
       </div>
  
 
-      {sizeModel.width > 0 && (
+      {sizeModel.width > 0 && editorContext &&(
         <>
           {/* // 描画範囲 */}
           <div
             className="absolute bg-gray-400 z-30 pointer-events-none"
             style={{
-              left: posCenter.x,
-              top: posCenter.y - (sizeModel.height / 2) * 0.6,
+              left: posCenter.x + sideMap[editorContext.side].offset.x,
+              top: posCenter.y + sideMap[editorContext.side].offset.y - (sizeModel.height / 2) * sideMap[editorContext.side].range.height,
               width: 1,
-              height: sizeModel.height * 0.6,
+              height: sizeModel.height * sideMap[editorContext.side].range.height,
             }}
           />
           <div
             className="absolute bg-gray-400 z-30 pointer-events-none"
             style={{
-              top: posCenter.y,
-              left: posCenter.x - (sizeModel.width / 2) * 0.4,
-              width: sizeModel.width * 0.4,
+              top: posCenter.y + sideMap[editorContext.side].offset.y,
+              left: posCenter.x + sideMap[editorContext.side].offset.x - (sizeModel.width / 2) * sideMap[editorContext.side].range.width,
+              width: sizeModel.width * sideMap[editorContext.side].range.width,
               height: 1,
             }}
           />
           <div
             className="absolute border border-red-400 z-30 pointer-events-none"
             style={{
-              top: posCenter.y - (sizeModel.height / 2) * 0.6,
-              left: posCenter.x - (sizeModel.width / 2) * 0.4,
-              width: sizeModel.width * 0.4,
-              height: sizeModel.height * 0.6,
+              top: posCenter.y + sideMap[editorContext.side].offset.y - (sizeModel.height / 2) * sideMap[editorContext.side].range.height,
+              left: posCenter.x + sideMap[editorContext.side].offset.x - (sizeModel.width / 2) * sideMap[editorContext.side].range.width,
+              width: sizeModel.width * sideMap[editorContext.side].range.width,
+              height: sizeModel.height * sideMap[editorContext.side].range.height,
             }}
           />
         </>

@@ -5,9 +5,10 @@ import { OrbitControls, useGLTF, Decal,useTexture } from '@react-three/drei';
 import * as THREE from 'three';
 import { useMemo, useRef,useContext } from 'react';
 import { DesignElementContext } from '@/components/DesignElementContext';
-import { ColorContext} from '@/components/ColorContext';
+import { EditorContext} from '@/components/EditorContext';
 import { colorMap } from '@/components/Colors'
 import CameraLight from '@/components/CameraLight'
+import { sideMap3D } from './Sides';
 
 function DebugOverlay() {
   const context = useContext(DesignElementContext);
@@ -74,9 +75,15 @@ function createTextTexture(text: string, options: {
 
 function Scene() {
   const context = useContext(DesignElementContext); // ImageBean[]
-  const colorContext = useContext(ColorContext);
+  const colorContext = useContext(EditorContext);
   const { scene } = useGLTF('/models/tshirt.glb');
-  const meshRef = useRef<THREE.Mesh>(null!);
+  // コンポーネント内で定義
+  const meshRefs:Record<'front'|'back'|'left'|'right', React.RefObject<THREE.Mesh>> = {
+    front: useRef<THREE.Mesh>(null!),
+    back: useRef<THREE.Mesh>(null!),
+    left: useRef<THREE.Mesh>(null!),
+    right: useRef<THREE.Mesh>(null!),
+  };
 
   // frontメッシュの取得
   useMemo(() => {
@@ -89,8 +96,11 @@ function Scene() {
           mat.color.set(colorMap[c]?.color);
 
       }
-      if ((child as THREE.Mesh).isMesh && child.name === 'front') {
-        meshRef.current = child as THREE.Mesh;
+      console.log("meshes",child.name,(child as THREE.Mesh).isMesh,":",child.type)
+      if ((child as THREE.Mesh).isMesh && Object.prototype.hasOwnProperty.call(meshRefs, child.name)) {
+          console.log("child name is "+child.name + "/"+child.type)
+          meshRefs[child.name as keyof typeof meshRefs].current = child as THREE.Mesh;
+
       }
     });
   }, [scene]);
@@ -106,57 +116,66 @@ function Scene() {
       <CameraLight/>
       <OrbitControls />
       <primitive object={scene} />
-      <group position={[0.0005,-0.56,0.05553]} rotation={[Math.PI/2,0,0]} scale={1.05}>
+      <group>
 
-      {context?.elements.map((element,index) => {
-        if (!meshRef.current) return null;
+        {context?.elements.map((element,index) => {
+          if (!meshRefs[element.side]?.current) return null;
 
-        // imageデカール
-        if (element.type === "image") {
-          const tex = textureMap[imageUrls.indexOf(element.image ?? '')];
-          if (!tex) return null;
+          // imageデカール
+          if (element.type === "image") {
+            const tex = textureMap[imageUrls.indexOf(element.image ?? '')];
+            if (!tex) return null;
 
-          return (
-            <Decal
-              key={element.id}
-              mesh={meshRef}
-              position={[0.0009 * element.position.x, 0, -0.53 + 0.0009 * element.position.y]}
-              rotation={[Math.PI / 2 , 0 , element.rotate / 180 * Math.PI]}
-              scale={[0.115 * element.size.width / 128, 0.115 * element.size.height / 128, 0.3]}
-              map={tex}
-              renderOrder={index}
-              depthTest={false}
-            />
-          );
-        }
+            return (
+              <group key={element.id} position={sideMap3D[element.side].meshPosition} rotation={sideMap3D[element.side].meshRotation} scale={sideMap3D[element.side].meshScale}>
+                <Decal
+                  key={element.id}
+                  mesh={meshRefs[element.side]}
+                  position= {sideMap3D[element.side].position(element.position.x, element.position.y)}
+                  rotation={sideMap3D[element.side].rotation(element.rotate)}
+                  scale={sideMap3D[element.side].scale(element.size.width,element.size.height)}
+                  map={tex}
+                  renderOrder={index}
+                  depthTest={false}
+                  polygonOffsetFactor={-150}
+                />
+              </group>
 
-        // textデカール
-        if (element.type === "text") {
-          const textTexture = createTextTexture(element.text, {
-            fontSize: element.fontSize,
-            fontFamily: element.fontFamily,
-            color: element.color,
-            width: element.size.width,
-            height: element.size.height,
-          });
+            );
+          }
 
-          return (
-            <Decal
-              key={element.id}
-              renderOrder={index}
-              mesh={meshRef}
-              position={[0.0009 * element.position.x, 0, -0.53 + 0.0009 * element.position.y]}
-              rotation={[Math.PI / 2, 0, element.rotate / 180 * Math.PI]}
-              scale={[0.115 * element.size.width / 128, 0.115 * element.size.height / 128, 0.3]}
-              map={textTexture}
-              depthTest={false}
-  
-            />
-          );
-        }
+          // textデカール
+          if (element.type === "text") {
+            const textTexture = createTextTexture(element.text, {
+              fontSize: element.fontSize,
+              fontFamily: element.fontFamily,
+              color: element.color,
+              width: element.size.width,
+              height: element.size.height,
+            });
+            return (
+              <group key={element.id} position={sideMap3D[element.side].meshPosition} rotation={sideMap3D[element.side].meshRotation} scale={sideMap3D[element.side].meshScale}>
+                <Decal
+                  key={element.id}
+                  renderOrder={index}
+                  mesh={meshRefs[element.side]}
+                  position= {sideMap3D[element.side].position(element.position.x, element.position.y)}
+                  rotation={sideMap3D[element.side].rotation(element.rotate)}
+                  scale={sideMap3D[element.side].scale(element.size.width,element.size.height)}
+                  // position={new THREE.Vector3(0.0009 * element.position.x, 0, -0.53 + 0.0009 * element.position.y)}
+                  // rotation={new THREE.Euler(Math.PI / 2 , Math.PI , element.rotate / 180 * Math.PI)}
+                  // scale={new THREE.Vector3(0.115 * element.size.width / 128, 0.115 * element.size.height / 128, 0.3)}
+                  map={textTexture}
+                  depthTest
+                  polygonOffsetFactor={-150}
+      
+                />
+              </group>
+            );
+          }
 
-        return null;
-      })}
+          return null;
+        })}
 
       </group>
     </group>
