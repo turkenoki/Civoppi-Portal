@@ -1,10 +1,14 @@
 import { rm } from 'fs/promises';
 import path from 'path';
 import os from 'os';
-import { NextResponse } from 'next/server';
-
-export async function GET(_: Request, { params }: { params: { id: string } }) {
-  const dir = path.join(os.tmpdir(), 'tshirtsEditor', params.id);
+import { NextRequest,NextResponse } from 'next/server';
+export const runtime = 'nodejs';
+export async function GET(
+  request: NextRequest, 
+  { params }: { params: Promise<{ id: string }> }
+  ) {
+  const { id } = await params;
+  const dir = path.join(os.tmpdir(), 'tshirtsEditor', id);
 
   try {
     await rm(dir, { recursive: true, force: true });
