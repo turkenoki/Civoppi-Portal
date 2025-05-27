@@ -21,9 +21,7 @@ export async function POST(req: NextRequest) {
     .toISOString()
     .replace(/[-:.TZ]/g, '')
     .slice(0,14)
-
-  const tmpBase = os.tmpdir()+'\\tshirtsEditor'; // Windowsなら C:\Users\...\AppData\Local\Temp など
-  const baseDir = path.join(tmpBase, folderName);
+  const baseDir = path.join(os.tmpdir(),'tshirtsEditor',folderName);
   await mkdir(baseDir, { recursive: true });
 
   // ✅ meta.json を保存

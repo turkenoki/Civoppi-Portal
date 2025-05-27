@@ -7,7 +7,7 @@ import { NextResponse } from 'next/server';
 export const runtime = 'nodejs';
 
 export async function GET() {
-  const baseDir = os.tmpdir + '\\tshirtsEditor';
+  const baseDir = path.join(os.tmpdir(),'tshirtsEditor');
   const entries = await readdir(baseDir);
 
   const folders: string[] = [];

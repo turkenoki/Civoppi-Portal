@@ -14,7 +14,7 @@ export async function GET(
   
   const { id } = await params;  // paramsはPromise<{ id: string }> なのでawaitで中身を取得
 
-  const targetDir = path.join(os.tmpdir + '\\tshirtsEditor', id);
+  const targetDir = path.join(os.tmpdir(),'tshirtsEditor', id);
 
   // フォルダ存在確認
   if (!fs.existsSync(targetDir)) {
