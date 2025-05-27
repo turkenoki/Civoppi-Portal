@@ -12,6 +12,7 @@ export default function TshirtsEditor() {
   const [sizeModel, setSizeModel] = useState({ width: 0, height: 0 });
   const [posCenter, setPosCenter] = useState({ x: 0, y: 0 });
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
   const modelRef = useRef<HTMLImageElement>(null);
   const elementsContext = useContext(DesignElementContext);
   const editorContext = useContext(EditorContext);
@@ -144,6 +145,7 @@ export default function TshirtsEditor() {
         id: uuidv4(),
         type: 'image',
         image: url,
+        file: file,
         position: { x: dropX - posCenter.x, y: dropY - posCenter.y },
         rotate: 0,
         size: { width: 128   , height: 128 },
@@ -165,6 +167,23 @@ export default function TshirtsEditor() {
       size: { width: 100 , height:  40 },
       side: editorContext?.side,
     } as TextBean);
+  };
+
+  const handleSave = async () => {
+    if(isSaving)return;
+    setIsSaving(true);
+    try{
+      const formData = elementsContext?.toFormData();
+      const res = await fetch('/serverside/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await res.json();
+      alert(`アップロード完了: ${data.path}`);
+    }finally{
+      setIsSaving(false);
+
+    }
   };
 
   const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
@@ -207,6 +226,7 @@ export default function TshirtsEditor() {
           </select>
         </div>
 
+        {/* 文字挿入 */}
         <button className="mt-3 bg-green-500 text-white px-3 py-1 rounded" onClick={handleAddText}>文字追加</button>
         
         <div className="flex flex-col mt-3">
@@ -229,6 +249,9 @@ export default function TshirtsEditor() {
             className="mb-2"
           />
         </div>
+
+        <button className="mt-3 bg-red-400 text-white px-3 py-1 rounded" onClick={handleSave}>保存</button>
+
       </div>
 
 

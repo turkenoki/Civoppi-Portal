@@ -9,9 +9,11 @@ export default function Header() {
         <Link href="/" className="ml-3 text-sm text-blue-600 hover:underline">
             👚 編集
         </Link>
-
         <Link href="/sim3DDesign" className="ml-3 text-sm text-blue-600 hover:underline">
             👀 デザイン確認
+        </Link>
+        <Link href="/admin" className="ml-3 text-sm text-blue-600 hover:underline">
+            ⚙️ 業者確認用
         </Link>
       </div>
       <p className="mt-auto ml-auto text-xs">v{pkg.version}</p>
