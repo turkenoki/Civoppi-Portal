@@ -4,10 +4,10 @@ import Link from 'next/link';
 export default function PortalPage() {
   return (
     <main className="flex flex-col items-center justify-center h-full relative p-4">
-      <h1 className="text-2xl font-bold mb-4">Portal</h1>
+      <h1 className="text-2xl font-bold mb-4">オリジナルグッズ</h1>
       <ul className="space-y-2">
         <li>
-          <Link href="/" className="text-blue-600 hover:underline">👚 編集</Link>
+          <Link href="/editor" className="text-blue-600 hover:underline">👚 編集</Link>
         </li>
         <li>
           <Link href="/sim3DDesign" className="text-blue-600 hover:underline">👀 デザイン確認</Link>
