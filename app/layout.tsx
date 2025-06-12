@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "T-shirtsEditor",
-  description: "Design your T-shirt",
+  title: "Civoppi.com",
+  description: "Civilian Opinions",
 };
 
 export default function RootLayout({

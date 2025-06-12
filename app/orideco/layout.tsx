@@ -16,8 +16,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "T-shirtsEditor",
-  description: "Design your T-shirt",
+  title: "Orideco",
+  description: "オリジナルデザインのアイテムを作ろう",
 };
 
 export default function RootLayout({
