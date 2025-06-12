@@ -4,10 +4,10 @@ import { Canvas } from '@react-three/fiber';
 import { OrbitControls, useGLTF, Decal,useTexture } from '@react-three/drei';
 import * as THREE from 'three';
 import { useMemo, useRef,useContext } from 'react';
-import { DesignElementContext } from '@/components/DesignElementContext';
-import { EditorContext} from '@/components/EditorContext';
-import { colorMap } from '@/components/Colors'
-import CameraLight from '@/components/CameraLight'
+import { DesignElementContext } from '@/components/orideco/DesignElementContext';
+import { EditorContext} from '@/components/orideco/EditorContext';
+import { colorMap } from '@/components/orideco/Colors'
+import CameraLight from '@/components/orideco/CameraLight'
 import { sideMap3D } from './Sides';
 
 function DebugOverlay() {

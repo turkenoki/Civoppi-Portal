@@ -2,7 +2,7 @@ import { mkdir, writeFile } from 'fs/promises';
 import os from 'os';
 import path from 'path';
 import { NextRequest, NextResponse } from 'next/server';
-import {BaseElement} from '@/components/DesignElementContext'
+import {BaseElement} from '@/components/orideco/DesignElementContext'
 export const runtime = 'nodejs';
 
 export async function POST(req: NextRequest) {

@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "../globals.css";
 import Header from "@/components/Header";
-import { DesignElementProvider } from '@/components/DesignElementContext';
-import { EditorContextProvider } from '@/components/EditorContext';
+import { DesignElementProvider } from '@/components/orideco/DesignElementContext';
+import { EditorContextProvider } from '@/components/orideco/EditorContext';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

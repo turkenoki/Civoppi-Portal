@@ -1,13 +1,13 @@
 'use client'
 
 import { useState, useRef, useEffect, useContext } from 'react';
-import { DesignElementContext, ImageBean, TextBean } from '@/components/DesignElementContext';
-import { EditorContext } from '@/components/EditorContext';
+import { DesignElementContext, ImageBean, TextBean } from '@/components/orideco/DesignElementContext';
+import { EditorContext } from '@/components/orideco/EditorContext';
 import { v4 as uuidv4 } from 'uuid';
-import { colorMap } from '@/components/Colors'
-import { sideMap } from '@/components/Sides'
+import { colorMap } from '@/components/orideco/Colors'
+import { sideMap } from '@/components/orideco/SidesToto'
 
-export default function TshirtsEditor() {
+export default function TotoEditor() {
   const [resizingId, setResizingId] = useState<string | null>(null);
   const [sizeModel, setSizeModel] = useState({ width: 0, height: 0 });
   const [posCenter, setPosCenter] = useState({ x: 0, y: 0 });
@@ -320,7 +320,7 @@ export default function TshirtsEditor() {
       {/*  Tシャツモデル */}
       {editorContext && (
         <img
-          src={`/models/tshirts_${editorContext?.side}_${editorContext?.color}.png`}
+          src={`/models/toto_${editorContext?.side}_${editorContext?.color}.png`}
           ref={modelRef}
           width= {560*sideMap[editorContext.side].scale}
           height={560*sideMap[editorContext.side].scale}

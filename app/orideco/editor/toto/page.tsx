@@ -1,11 +1,11 @@
 'use client';
 
-import TshirtsEditor from "@/components/TshirtsEditor";
+import TotoEditor from "@/components/orideco/TotoEditor";
 
 export default function Home() {
   return (
     <main>
-      <TshirtsEditor />
+      <TotoEditor />
     </main>
   );
 }
