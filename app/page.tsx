@@ -10,7 +10,7 @@ export default function PortalPage() {
           <Link href="/orideco" className="text-blue-600 hover:underline">👚 オリジナルグッズを作ろう！</Link>
         </li>
       </ul>
-      <img src="/mascot.png" alt="Mascot" className="absolute right-4 top-1/2 -translate-y-1/2 w-32" />
+      <img src="/mascot.png" alt="Mascot" className="absolute right-4 top-1/2 -translate-y-1/2 h-128 w-100" />
     </main>
   );
 }
