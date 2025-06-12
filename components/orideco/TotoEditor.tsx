@@ -5,7 +5,9 @@ import { DesignElementContext, ImageBean, TextBean } from '@/components/orideco/
 import { EditorContext } from '@/components/orideco/EditorContext';
 import { v4 as uuidv4 } from 'uuid';
 import { colorMap } from '@/components/orideco/Colors'
-import { sideMap } from '@/components/orideco/SidesToto'
+import { sides } from '@/components/orideco/Sides'
+
+const sideMap = sides.toto.sideMap
 
 export default function TotoEditor() {
   const [resizingId, setResizingId] = useState<string | null>(null);
