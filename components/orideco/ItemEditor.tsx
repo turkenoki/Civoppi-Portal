@@ -21,6 +21,10 @@ export default function ItemEditor({ item }: { item: 'tshirt' | 'toto' }) {
 
   const initialResizeRef = useRef<{ startX: number; startY: number; width: number; height: number } | null>(null);
 
+  // Touch gesture refs
+  const dragTouchRef = useRef<{ id: string; startX: number; startY: number; posX: number; posY: number } | null>(null);
+  const pinchTouchRef = useRef<{ id: string; startDistance: number; startWidth: number; startHeight: number; posX: number; posY: number } | null>(null);
+
   useEffect(() => {
     const handleResize = () => setPosCenter({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
     handleResize();
@@ -97,6 +101,59 @@ export default function ItemEditor({ item }: { item: 'tshirt' | 'toto' }) {
     };
   }, [resizingId]);
 
+  useEffect(() => {
+    const getDistance = (touches: TouchList) => {
+      const dx = touches[0].clientX - touches[1].clientX;
+      const dy = touches[0].clientY - touches[1].clientY;
+      return Math.hypot(dx, dy);
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (pinchTouchRef.current && e.touches.length >= 2) {
+        const { id, startDistance, startWidth, startHeight, posX, posY } = pinchTouchRef.current;
+        const dist = getDistance(e.touches);
+        const scale = dist / startDistance;
+        const newWidth = Math.max(startWidth * scale, 30);
+        const newHeight = Math.max(startHeight * scale, 30);
+        const dx = (newWidth - startWidth) / 2;
+        const dy = (newHeight - startHeight) / 2;
+        elementsContext?.update(id, {
+          position: { x: posX + dx, y: posY + dy },
+          size: { width: newWidth, height: newHeight },
+        });
+        e.preventDefault();
+        return;
+      }
+
+      if (dragTouchRef.current && e.touches.length === 1) {
+        const touch = e.touches[0];
+        const { id, startX, startY, posX, posY } = dragTouchRef.current;
+        const dx = touch.clientX - startX;
+        const dy = touch.clientY - startY;
+        elementsContext?.update(id, {
+          position: { x: posX + dx, y: posY + dy },
+        });
+        e.preventDefault();
+      }
+    };
+
+    const handleTouchEnd = (e: TouchEvent) => {
+      if (e.touches.length < 2) {
+        pinchTouchRef.current = null;
+      }
+      if (e.touches.length === 0) {
+        dragTouchRef.current = null;
+      }
+    };
+
+    window.addEventListener('touchmove', handleTouchMove, { passive: false });
+    window.addEventListener('touchend', handleTouchEnd);
+    return () => {
+      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('touchend', handleTouchEnd);
+    };
+  }, []);
+
   const handleResizeStart = (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
     setResizingId(id);
@@ -108,6 +165,40 @@ export default function ItemEditor({ item }: { item: 'tshirt' | 'toto' }) {
       width: startDecal.size.width,
       height: startDecal.size.height,
     };
+  };
+
+  const handleTouchStartElement = (e: React.TouchEvent, id: string) => {
+    e.preventDefault();
+    setSelectedId(id);
+    if (e.touches.length === 1) {
+      const touch = e.touches[0];
+      const found = elementsContext?.find(id);
+      if (!found) return;
+      dragTouchRef.current = {
+        id,
+        startX: touch.clientX,
+        startY: touch.clientY,
+        posX: found.position.x,
+        posY: found.position.y,
+      };
+      pinchTouchRef.current = null;
+    }
+    if (e.touches.length === 2) {
+      const found = elementsContext?.find(id);
+      if (!found) return;
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      const distance = Math.hypot(dx, dy);
+      pinchTouchRef.current = {
+        id,
+        startDistance: distance,
+        startWidth: found.size.width,
+        startHeight: found.size.height,
+        posX: found.position.x,
+        posY: found.position.y,
+      };
+      dragTouchRef.current = null;
+    }
   };
 
   const handleDragStart = (e: React.MouseEvent, id: string) => {
@@ -363,6 +454,7 @@ export default function ItemEditor({ item }: { item: 'tshirt' | 'toto' }) {
           <div
             key={element.id}
             onMouseDown={(e) => handleDragStart(e, element.id)}
+            onTouchStart={(e) => handleTouchStartElement(e, element.id)}
             onClick={() => setSelectedId(element.id)}
             className="absolute select-none border border-gray-400 z-10  cursor-move"
             style={{
