@@ -15,6 +15,7 @@ export default function ItemEditor({ item }: { item: 'tshirt' | 'toto' }) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const modelRef = useRef<HTMLImageElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const elementsContext = useContext(DesignElementContext);
   const editorContext = useContext(EditorContext);
 
@@ -153,6 +154,24 @@ export default function ItemEditor({ item }: { item: 'tshirt' | 'toto' }) {
     }
   };
 
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file && file.type.startsWith('image/')) {
+      const url = URL.createObjectURL(file);
+      elementsContext?.add({
+        id: uuidv4(),
+        type: 'image',
+        image: url,
+        file: file,
+        position: { x: 0, y: 0 },
+        rotate: 0,
+        size: { width: 128, height: 128 },
+        side: editorContext?.side,
+      } as ImageBean);
+    }
+    event.target.value = '';
+  };
+
   const handleAddText = () => {
     elementsContext?.add({
       id: uuidv4(),
@@ -245,6 +264,18 @@ export default function ItemEditor({ item }: { item: 'tshirt' | 'toto' }) {
             className="mb-2"
           />
         </div>
+
+        <input
+          type="file"
+          accept="image/*"
+          ref={fileInputRef}
+          className="hidden"
+          onChange={handleFileUpload}
+        />
+        <button
+          className="mt-3 bg-blue-500 text-white px-3 py-1 rounded"
+          onClick={() => fileInputRef.current?.click()}
+        >画像追加</button>
 
         <button className="mt-3 bg-red-400 text-white px-3 py-1 rounded" onClick={handleSave}>保存</button>
 
