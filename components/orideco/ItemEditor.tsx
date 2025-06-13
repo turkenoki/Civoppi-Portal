@@ -374,7 +374,7 @@ export default function ItemEditor({ item }: { item: 'tshirt' | 'toto' }) {
 
 
       {selectedId && elementsContext?.find(selectedId)?.type === "text" && (
-        <div className="fixed top-25 left-40 bg-white border shadow-md p-4 z-50 rounded w-30">
+        <div className="fixed top-25 left-40 border-1 shadow-md p-4 z-50 rounded w-30">
           <h2 className="text-sm font-bold mb-2">文字編集</h2>
 
           {/* テキスト入力 */}
