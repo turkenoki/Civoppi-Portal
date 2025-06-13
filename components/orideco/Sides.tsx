@@ -89,37 +89,6 @@ const totoSideMap: Record<string, SideAttributes> = {
   back: { name: '背面', scale: 1, offset: { x: 0, y: 70 }, range: { width: 0.5, height: 0.46 } },
 };
 
-const totoSideMap3D: Record<'front' | 'back', SideAttributes3D> = {
-  front: {
-    position(x, y) {
-      return new THREE.Vector3(0.0009 * x, 0, -0.53 + 0.0009 * y);
-    },
-    rotation(rotate) {
-      return new THREE.Euler(Math.PI / 2, 0, (rotate / 180) * Math.PI);
-    },
-    scale(width, height) {
-      return new THREE.Vector3(0.115 * width / 128, 0.115 * height / 128, 5);
-    },
-    meshPosition: new THREE.Vector3(0, -0.536, 0.06),
-    meshRotation: new THREE.Euler(Math.PI / 2, 0, 0),
-    meshScale: 1,
-  },
-  back: {
-    position(x, y) {
-      return new THREE.Vector3(-0.0009 * x, 0, -0.53 + 0.0009 * y);
-    },
-    rotation(rotate) {
-      return new THREE.Euler(Math.PI / 2, Math.PI, (rotate / 180) * Math.PI);
-    },
-    scale(width, height) {
-      return new THREE.Vector3(0.115 * width / 128, 0.115 * height / 128, 1);
-    },
-    meshPosition: new THREE.Vector3(0, -0.536, 0.06),
-    meshRotation: new THREE.Euler(Math.PI / 2, 0, 0),
-    meshScale: 1,
-  },
-};
-
 // ------------------------------------------------------------------------
 export const sides = {
   tshirt: {
