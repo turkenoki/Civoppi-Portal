@@ -4,8 +4,13 @@ import Link from 'next/link';
 export default function PortalPage() {
   return (
     <main className="flex flex-col items-center justify-center h-full relative p-4">
-      <h1 className="text-2xl font-bold mb-4">オリジナルグッズ</h1>
-      <ul className="mt-25 flex flex-row space-x-4">
+      <img
+        alt="orideco"
+        src="/oridecobanner.png"
+        className="w-100 h-50"
+      />
+
+      <ul className="mt-5 flex flex-row space-x-4">
         <li>
           <Link href="/orideco/editor/tshirts" className="text-blue-600 hover:underline">
             <div className="flex flex-col items-center w-32 border rounded p-2 space-y-1">
