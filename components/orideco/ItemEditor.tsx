@@ -301,7 +301,7 @@ export default function ItemEditor({ item }: { item: 'tshirt' | 'toto' }) {
 
   return (
     <div onDrop={handleDrop} onDragOver={handleDragOver} className="w-screen h-screen bg-white relative">
-      <div className="fixed rounded border-1 p-2 top-13 left-3 z-50 flex flex-col w-30 text-sm">
+      <div className="fixed rounded border-1 p-2 top-25 left-3 z-50 flex flex-col w-30 text-sm">
         {/* 編集面 */}
         <div className="mt-2 flex flex-col">
           <select
@@ -374,7 +374,7 @@ export default function ItemEditor({ item }: { item: 'tshirt' | 'toto' }) {
 
 
       {selectedId && elementsContext?.find(selectedId)?.type === "text" && (
-        <div className="fixed top-13 left-40 bg-white border shadow-md p-4 z-50 rounded w-30">
+        <div className="fixed top-25 left-40 bg-white border shadow-md p-4 z-50 rounded w-30">
           <h2 className="text-sm font-bold mb-2">文字編集</h2>
 
           {/* テキスト入力 */}
