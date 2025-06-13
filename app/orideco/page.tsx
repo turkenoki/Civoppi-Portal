@@ -5,27 +5,29 @@ export default function PortalPage() {
   return (
     <main className="flex flex-col items-center justify-center h-full relative p-4">
       <h1 className="text-2xl font-bold mb-4">オリジナルグッズ</h1>
-      <ul className="mt-25 space-y-2 flex flex-row">
+      <ul className="mt-25 flex flex-row space-x-4">
         <li>
           <Link href="/orideco/editor/tshirts" className="text-blue-600 hover:underline">
-            <div className="flex flex-col items-center w-32">
+            <div className="flex flex-col items-center w-32 border rounded p-2 space-y-1">
               <img
                 alt="Tシャツ"
                 src="/models/tshirt_front_white.png"
-                className="right-4 top-1/2 -translate-y-1/2 w-32"
+                className="w-32"
               />
+              <hr className="w-full border-t my-1" />
               <span className="text-center">Tシャツ</span>
             </div>
           </Link>
         </li>
         <li>
           <Link href="/orideco/editor/toto" className="text-blue-600 hover:underline">
-            <div className="flex flex-col items-center w-32">
+            <div className="flex flex-col items-center w-32 border rounded p-2 space-y-1">
               <img
                 alt="トートバッグ"
                 src="/models/toto_front_white.png"
-                className="right-4 top-1/2 -translate-y-1/2 w-32"
+                className="w-32"
               />
+              <hr className="w-full border-t my-1" />
               <span className="text-center">トートバッグ</span>
             </div>
           </Link>
