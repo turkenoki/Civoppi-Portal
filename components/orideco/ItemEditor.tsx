@@ -173,7 +173,7 @@ export default function ItemEditor({ item }: { item: 'tshirt' | 'toto' }) {
     setIsSaving(true);
     try{
       const formData = elementsContext?.toFormData();
-      const res = await fetch('/serverside/upload', {
+      const res = await fetch('/orideco/serverside/upload', {
         method: 'POST',
         body: formData,
       });
@@ -188,8 +188,6 @@ export default function ItemEditor({ item }: { item: 'tshirt' | 'toto' }) {
   const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
   };
-
-  const prefix = item === 'tshirt' ? 'tshirts' : item;
 
   return (
     <div onDrop={handleDrop} onDragOver={handleDragOver} className="w-screen h-screen bg-white relative">
@@ -315,15 +313,15 @@ export default function ItemEditor({ item }: { item: 'tshirt' | 'toto' }) {
         </div>
       )}
 
-      {/*  Tシャツモデル */}
+      {/*  Itemモデル */}
       {editorContext && (
         <img
-          src={`/models/${prefix}_${editorContext?.side}_${editorContext?.color}.png`}
+          src={`/models/${item}_${editorContext?.side}_${editorContext?.color}.png`}
           ref={modelRef}
           width= {560*sideMap[editorContext.side].scale}
           height={560*sideMap[editorContext.side].scale}
           className="absolute select-none z-0 left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2"
-          alt="tshirt"
+          alt="item"
           draggable={false}
         />
       )}

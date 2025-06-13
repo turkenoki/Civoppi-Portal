@@ -128,7 +128,7 @@ export const sides = {
   },
   toto: {
     sideMap: totoSideMap,
-    sideMap3D: totoSideMap3D,
+    sideMap3D: null,
   },
 };
 

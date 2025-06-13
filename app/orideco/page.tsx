@@ -8,7 +8,7 @@ export default function PortalPage() {
       <ul className="mt-25 space-y-2 flex flex-row">
         <li>
           <Link href="/orideco/editor/tshirts" className="text-blue-600 hover:underline">
-            <img alt="Tシャツ" src="/models/tshirts_front_white.png"  className="right-4 top-1/2 -translate-y-1/2 w-32"/>
+            <img alt="Tシャツ" src="/models/tshirt_front_white.png"  className="right-4 top-1/2 -translate-y-1/2 w-32"/>
           </Link>
         </li>
         <li>
