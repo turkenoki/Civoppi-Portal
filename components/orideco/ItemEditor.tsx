@@ -68,8 +68,8 @@ export default function ItemEditor({ item }: { item: 'tshirt' | 'toto' }) {
         const found = elementsContext?.find(resizingId);
         if (!found) return;
         const { startX, startY, width, height } = initialResizeRef.current;
-        const deltaX = (e.clientX - startX)/1.75;
-        const deltaY = (e.clientY - startY)/1.75;
+        const deltaX = (e.clientX - startX)/ 1.75;
+        const deltaY = (e.clientY - startY)/ 1.75;
         const newWidth = Math.max(width + deltaX, 30);
         const newHeight = Math.max(height + deltaY, 30);
         const dx = (newWidth - width) / 2;
@@ -117,8 +117,8 @@ export default function ItemEditor({ item }: { item: 'tshirt' | 'toto' }) {
     const startDecal = elementsContext?.find(id);
     if (!startDecal) return;
     const handleMouseMove = (ev: MouseEvent) => {
-      const dx = ev.clientX - startX;
-      const dy = ev.clientY - startY;
+      const dx = (ev.clientX - startX) / 1.75;
+      const dy = (ev.clientY - startY) / 1.75;
       elementsContext?.update(id, {
         position: {
           x: startDecal.position.x + dx,
