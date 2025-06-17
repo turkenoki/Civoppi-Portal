@@ -2,14 +2,15 @@
 
 import { useState, useRef, useEffect, useContext } from 'react';
 import JSZip from 'jszip';
-import { DesignElementContext, ImageBean, TextBean } from '@/components/orideco/DesignElementContext';
+import { DesignElementContext, ImageBean, TextBean, BaseElement } from '@/components/orideco/DesignElementContext';
 import { EditorContext } from '@/components/orideco/EditorContext';
 import { v4 as uuidv4 } from 'uuid';
 import { colorMap } from '@/components/orideco/Colors'
 import { sides } from '@/components/orideco/Sides'
 
 export default function ItemEditor({ item }: { item: 'tshirt' | 'toto' }) {
-  const sideMap = sides[item].sideMap;
+  const [currentItem, setCurrentItem] = useState<'tshirt' | 'toto'>(item);
+  const sideMap = sides[currentItem].sideMap;
   const [resizingId, setResizingId] = useState<string | null>(null);
   const [sizeModel, setSizeModel] = useState({ width: 0, height: 0 });
   const [posCenter, setPosCenter] = useState({ x: 0, y: 0 });
@@ -236,6 +237,7 @@ export default function ItemEditor({ item }: { item: 'tshirt' | 'toto' }) {
       const url = URL.createObjectURL(file);
       elementsContext?.add({
         id: uuidv4(),
+        item: currentItem,
         type: 'image',
         image: url,
         file: file,
@@ -253,6 +255,7 @@ export default function ItemEditor({ item }: { item: 'tshirt' | 'toto' }) {
       const url = URL.createObjectURL(file);
       elementsContext?.add({
         id: uuidv4(),
+        item: currentItem,
         type: 'image',
         image: url,
         file: file,
@@ -268,6 +271,7 @@ export default function ItemEditor({ item }: { item: 'tshirt' | 'toto' }) {
   const handleAddText = () => {
     elementsContext?.add({
       id: uuidv4(),
+      item: currentItem,
       type: 'text',
       text: 'New Text',
       fontSize: 18,
@@ -316,6 +320,8 @@ export default function ItemEditor({ item }: { item: 'tshirt' | 'toto' }) {
       const metaFile = zip.file('meta.json');
       if (!metaFile) throw new Error('meta.json does not exists.');
       const metaText = await metaFile.async('string');
+      const parsed: BaseElement[] = JSON.parse(metaText);
+      const uploadedItem = parsed[0]?.item as 'tshirt' | 'toto' | undefined;
       const imgList: { [key: string]: File } = {};
       for (const filename in zip.files) {
         if (filename === 'meta.json') continue;
@@ -326,6 +332,9 @@ export default function ItemEditor({ item }: { item: 'tshirt' | 'toto' }) {
       }
       elementsContext?.clear();
       elementsContext?.fromData({ meta: metaText, images: imgList });
+      if(uploadedItem && uploadedItem !== currentItem){
+        setCurrentItem(uploadedItem);
+      }
       alert('読み込みました。');
     } finally {
       event.target.value = '';
@@ -487,7 +496,7 @@ export default function ItemEditor({ item }: { item: 'tshirt' | 'toto' }) {
       {/*  Itemモデル */}
       {editorContext && (
         <img
-          src={`/models/${item}_${editorContext?.side}_${editorContext?.color}.png`}
+          src={`/models/${currentItem}_${editorContext?.side}_${editorContext?.color}.png`}
           ref={modelRef}
           width= {560*sideMap[editorContext.side].scale}
           height={560*sideMap[editorContext.side].scale}
