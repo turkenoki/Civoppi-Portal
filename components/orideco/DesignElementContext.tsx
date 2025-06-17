@@ -5,6 +5,7 @@ import React, { createContext, useState, ReactNode } from 'react';
 // 共通型 Base
 export interface BaseElement {
   id: string;
+  item: 'tshirt' | 'toto';
   type: 'image'|'text';
   position: { x: number; y: number };
   rotate: number;
@@ -82,9 +83,12 @@ export const DesignElementProvider = ({ children }: { children: ReactNode }) => 
     const parsed : BaseElement[] = JSON.parse(data.meta);
 
     parsed.forEach((element)=>{
+      if(!('item' in element)){
+        (element as BaseElement).item = 'tshirt';
+      }
       if(isTextBean(element)){
         add(element);
-        return;        
+        return;
       }
       if(isImageBean(element)){
         element.file = data.images[element.id];
