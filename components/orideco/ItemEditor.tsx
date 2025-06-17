@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect, useContext } from 'react';
+import JSZip from 'jszip';
 import { DesignElementContext, ImageBean, TextBean } from '@/components/orideco/DesignElementContext';
 import { EditorContext } from '@/components/orideco/EditorContext';
 import { v4 as uuidv4 } from 'uuid';
@@ -16,6 +17,7 @@ export default function ItemEditor({ item }: { item: 'tshirt' | 'toto' }) {
   const [isSaving, setIsSaving] = useState(false);
   const modelRef = useRef<HTMLImageElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const zipInputRef = useRef<HTMLInputElement>(null);
   const elementsContext = useContext(DesignElementContext);
   const editorContext = useContext(EditorContext);
 
@@ -279,19 +281,54 @@ export default function ItemEditor({ item }: { item: 'tshirt' | 'toto' }) {
   };
 
   const handleSave = async () => {
-    if(isSaving)return;
+    if (isSaving) return;
     setIsSaving(true);
-    try{
-      const formData = elementsContext?.toFormData();
-      const res = await fetch('/orideco/serverside/upload', {
-        method: 'POST',
-        body: formData,
-      });
-      const data = await res.json();
-      alert(`アップロード完了: ${data.path}`);
-    }finally{
-      setIsSaving(false);
+    try {
+      const zip = new JSZip();
+      zip.file('meta.json', JSON.stringify(elementsContext?.elements ?? [], null, 2));
 
+      const promises = (elementsContext?.elements ?? []).map(async (el) => {
+        if (el.type !== 'image') return;
+        const buffer = await el.file.arrayBuffer();
+        const ext = el.file.name.split('.').pop() ?? 'bin';
+        zip.file(`${el.id}.${ext}`, buffer);
+      });
+      await Promise.all(promises);
+
+      const blob = await zip.generateAsync({ type: 'blob' });
+      const ts = new Date().toISOString().replace(/[-:.TZ]/g, '').slice(0, 14);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${ts}.zip`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleZipUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    try {
+      const zip = await JSZip.loadAsync(file);
+      const metaFile = zip.file('meta.json');
+      if (!metaFile) throw new Error('meta.json does not exists.');
+      const metaText = await metaFile.async('string');
+      const imgList: { [key: string]: File } = {};
+      for (const filename in zip.files) {
+        if (filename === 'meta.json') continue;
+        const entry = zip.files[filename];
+        if (entry.dir) continue;
+        const blob = await entry.async('blob');
+        imgList[filename.split('.').shift() ?? filename] = new File([blob], filename, { type: blob.type });
+      }
+      elementsContext?.clear();
+      elementsContext?.fromData({ meta: metaText, images: imgList });
+      alert('読み込みました。');
+    } finally {
+      event.target.value = '';
     }
   };
 
@@ -367,6 +404,18 @@ export default function ItemEditor({ item }: { item: 'tshirt' | 'toto' }) {
           className="mt-3 bg-blue-500 text-white px-3 py-1 rounded"
           onClick={() => fileInputRef.current?.click()}
         >画像追加</button>
+
+        <input
+          type="file"
+          accept="application/zip"
+          ref={zipInputRef}
+          className="hidden"
+          onChange={handleZipUpload}
+        />
+        <button
+          className="mt-3 bg-yellow-500 text-white px-3 py-1 rounded"
+          onClick={() => zipInputRef.current?.click()}
+        >取り込み</button>
 
         <button className="mt-3 bg-red-400 text-white px-3 py-1 rounded" onClick={handleSave}>保存</button>
 
