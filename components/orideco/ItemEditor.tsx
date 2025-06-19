@@ -418,8 +418,9 @@ export default function ItemEditor({ item }: { item: 'tshirt' | 'toto' }) {
         >画像追加</button>
 
         <button
-          className="mt-3 bg-purple-500 text-white px-3 py-1 rounded"
+          className="mt-3 bg-purple-500 text-white px-3 py-1 rounded disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"
           onClick={() => setShowPreview(true)}
+          disabled={!sides[currentItem].sideMap3D}
         >デザイン確認</button>
 
         <input
