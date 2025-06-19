@@ -1,13 +1,13 @@
 'use client'
 
 import { useState, useRef, useEffect, useContext } from 'react';
+import Link from 'next/link';
 import JSZip from 'jszip';
 import { DesignElementContext, ImageBean, TextBean, BaseElement } from '@/components/orideco/DesignElementContext';
 import { EditorContext } from '@/components/orideco/EditorContext';
 import { v4 as uuidv4 } from 'uuid';
 import { colorMap } from '@/components/orideco/Colors'
 import { sides } from '@/components/orideco/Sides'
-import TshirtWithDecalFromImages from '@/components/orideco/TshirtsWithDecal'
 
 export default function ItemEditor({ item }: { item: 'tshirt' | 'toto' }) {
   const [currentItem, setCurrentItem] = useState<'tshirt' | 'toto'>(item);
@@ -17,7 +17,6 @@ export default function ItemEditor({ item }: { item: 'tshirt' | 'toto' }) {
   const [posCenter, setPosCenter] = useState({ x: 0, y: 0 });
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
-  const [showPreview, setShowPreview] = useState(false);
   const modelRef = useRef<HTMLImageElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const zipInputRef = useRef<HTMLInputElement>(null);
@@ -417,11 +416,20 @@ export default function ItemEditor({ item }: { item: 'tshirt' | 'toto' }) {
           onClick={() => fileInputRef.current?.click()}
         >画像追加</button>
 
-        <button
-          className="mt-3 bg-purple-500 text-white px-3 py-1 rounded disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"
-          onClick={() => setShowPreview(true)}
-          disabled={!sides[currentItem].sideMap3D}
-        >デザイン確認</button>
+        {sides[currentItem].sideMap3D ? (
+          <Link
+            href="/orideco/editor/sim3DDesign"
+            className="mt-3 bg-purple-500 text-white px-3 py-1 rounded block text-center"
+          >
+            デザイン確認
+          </Link>
+        ) : (
+          <span
+            className="mt-3 bg-gray-300 text-gray-500 px-3 py-1 rounded block text-center cursor-not-allowed"
+          >
+            デザイン確認
+          </span>
+        )}
 
         <input
           type="file"
@@ -619,15 +627,6 @@ export default function ItemEditor({ item }: { item: 'tshirt' | 'toto' }) {
         </>
       )}
     </div>
-    {showPreview && (
-      <>
-        <TshirtWithDecalFromImages />
-        <button
-          className="fixed top-2 left-2 bg-gray-700 text-white px-2 py-1 rounded z-50"
-          onClick={() => setShowPreview(false)}
-        >閉じる</button>
-      </>
-    )}
     </>
   );
 }
