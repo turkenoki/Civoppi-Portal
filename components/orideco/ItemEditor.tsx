@@ -7,6 +7,7 @@ import { EditorContext } from '@/components/orideco/EditorContext';
 import { v4 as uuidv4 } from 'uuid';
 import { colorMap } from '@/components/orideco/Colors'
 import { sides } from '@/components/orideco/Sides'
+import TshirtWithDecalFromImages from '@/components/orideco/TshirtsWithDecal'
 
 export default function ItemEditor({ item }: { item: 'tshirt' | 'toto' }) {
   const [currentItem, setCurrentItem] = useState<'tshirt' | 'toto'>(item);
@@ -16,6 +17,7 @@ export default function ItemEditor({ item }: { item: 'tshirt' | 'toto' }) {
   const [posCenter, setPosCenter] = useState({ x: 0, y: 0 });
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
   const modelRef = useRef<HTMLImageElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const zipInputRef = useRef<HTMLInputElement>(null);
@@ -346,6 +348,7 @@ export default function ItemEditor({ item }: { item: 'tshirt' | 'toto' }) {
   };
 
   return (
+    <>
     <div onDrop={handleDrop} onDragOver={handleDragOver} className="w-screen h-screen bg-white relative">
       <div className="fixed rounded border-1 p-2 top-25 left-3 z-50 flex flex-col w-30 text-sm">
         {/* 編集面 */}
@@ -413,6 +416,11 @@ export default function ItemEditor({ item }: { item: 'tshirt' | 'toto' }) {
           className="mt-3 bg-blue-500 text-white px-3 py-1 rounded"
           onClick={() => fileInputRef.current?.click()}
         >画像追加</button>
+
+        <button
+          className="mt-3 bg-purple-500 text-white px-3 py-1 rounded"
+          onClick={() => setShowPreview(true)}
+        >デザイン確認</button>
 
         <input
           type="file"
@@ -610,6 +618,16 @@ export default function ItemEditor({ item }: { item: 'tshirt' | 'toto' }) {
         </>
       )}
     </div>
+    {showPreview && (
+      <>
+        <TshirtWithDecalFromImages />
+        <button
+          className="fixed top-2 left-2 bg-gray-700 text-white px-2 py-1 rounded z-50"
+          onClick={() => setShowPreview(false)}
+        >閉じる</button>
+      </>
+    )}
+    </>
   );
 }
 
